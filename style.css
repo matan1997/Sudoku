@@ -1,0 +1,145 @@
+body {
+    background-color: #f5f3db;
+    color: #333;
+    font-family: 'Times New Roman', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    max-width: 600px;
+    padding: 20px;
+  }
+  
+
+h1 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+h2 {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+table { 
+    border-collapse: collapse; 
+    font-family: Calibri, sans-serif; 
+}
+
+colgroup, tbody { 
+    border: solid medium; 
+}
+
+td {
+    border: solid thin;
+    height: 3em;
+    width: 3em; 
+    padding: 0;
+}
+
+input {
+    /* font-size: 140%;
+    font-weight: bolder;
+    text-align: center;
+    height: 4em;
+    width: 4em; */
+    color: #000000;
+    padding: 0;
+    border: 0;
+    text-align: center;
+    width: 48px;
+    height: 48px;
+    font-size: 50px;
+    background-color: #FFFFFF;
+    outline: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+#solve-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+
+/* CSS */
+.button-56 {
+  margin: 20px auto;
+  align-items: center;
+  background-color: #fee6e3;
+  border: 2px solid #111;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #111;
+  cursor: pointer;
+  /* display: flex; */
+  display: inline-block;
+  margin-right: 10px;
+  font-family: Inter,sans-serif;
+  font-size: 16px;
+  height: 48px;
+  justify-content: center;
+  line-height: 24px;
+  max-width: 100%;
+  padding: 0 25px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-56:after {
+  background-color: #111;
+  border-radius: 8px;
+  content: "";
+  display: block;
+  height: 48px;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  top: -2px;
+  transform: translate(8px, 8px);
+  transition: transform .2s ease-out;
+  z-index: -1;
+}
+
+.button-56:hover:after {
+  transform: translate(0, 0);
+}
+
+.button-56:active {
+  background-color: #ffdeda;
+  outline: 0;
+}
+
+.button-56:hover {
+  outline: 0;
+}
+
+@media (min-width: 768px) {
+  .button-56 {
+    padding: 0 23px;
+  }
+}

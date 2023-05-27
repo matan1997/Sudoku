@@ -6,6 +6,10 @@ const gameBoard = [];
 const EASY = 20;
 const MED = 40;
 const HARD = 60;
+let winSteps;
+let mestake;
+let startTime;
+let timerInterval;
 let soltion = [];
 
 const makeBoard = () => {
@@ -44,7 +48,8 @@ const buildBoard = () => { //work
             input.type = "number"
             input.setAttribute('max', COL_SIZE);
             input.setAttribute("min", EMPTY_CELL+1);
-            input.setAttribute("place",(row*9)+col);
+            input.setAttribute("place",(col*9)+row);
+            input.readOnly = true;
             input.addEventListener("change", function() {
                 let v = parseInt(this.value);
                 if (v < 1) this.value = 1;
@@ -124,17 +129,25 @@ const updateBoard = async(board) => {
     for (let row = 0; row < ROW_SIZE; row++) {
         for (let col = 0; col < COL_SIZE; col++) {
             const element = inputs[(row*9)+col];
-            
+            if (gameBoard[row][col] !== EMPTY_CELL) {
+                element.readOnly = true;
+            }else{
+                element.readOnly = false;
+            }
             element.value = board[row][col];
+            element.style.color = "black";
         }
     }
 }
 
 const solve = () => {
     updateBoard(soltion);
+    stopTimer();
 }
 
 const genarateGame = async(diff) => {
+    winSteps = diff; //to change
+    mestake = 0;
     makeBoard();
     let row = 0;
     let col = 0;
@@ -144,20 +157,17 @@ const genarateGame = async(diff) => {
     gameBoard[3][3] = Math.floor(Math.random() * N)+1;
     await sodukuSolv(gameBoard);
     copy(soltion);
+    startTimer();
     genarateByDiff(diff);
-    //updateBoard(gameBoard);
 }
 
 const genarateByDiff = async(diff) => {
     let counter = 0;
-    let check = 0;
     while (counter < diff) {
         const col = Math.floor(Math.random() * 9);
         const row = Math.floor(Math.random() * 9);
-        check++;
         if(gameBoard[row][col] !== EMPTY_CELL){
             gameBoard[row][col] = EMPTY_CELL;
-            check = 0;
             counter++
         }
     }
@@ -165,15 +175,91 @@ const genarateByDiff = async(diff) => {
     updateBoard(gameBoard);
 }
 
+const checkBoard = () => {
+    let counter = 0;
+    const inputs = document.getElementsByTagName('input');
+
+    for (let row = 0; row < ROW_SIZE; row++) {
+        for (let col = 0; col < COL_SIZE; col++) {
+            const element = inputs[(row*9)+col];
+            element.addEventListener("input", function() {
+                const value = parseInt(this.value);
+                const place = parseInt(this.getAttribute('place'));
+                const col = parseInt(place / 9);
+                const row = place % 9;
+                console.log(soltion[col][row]);//to delete
+                if (value !== soltion[col][row]){
+                    this.style.color = "red";
+                    if (this.value !== "") {
+                        mestake++;
+                        console.log(mestake);
+                    }
+                    
+                }else{
+                    this.style.color = "green";
+                    gameBoard[row][col] = value;
+                    this.readOnly = true;
+                    counter++;
+                    if (gameBoard == soltion || counter === winSteps) {
+                        alert("WIN");
+                        stopTimer();
+                    }else{
+                        console.log("no baby");
+                    }
+                }
+            });
+        }
+    }
+
+    Array.prototype.forEach.call(inputs, element => {
+        element.addEventListener("input", function() {
+            // console.log(String(gameBoard));
+            // console.log(String(soltion));
+            if (String(soltion) === String(gameBoard)) {
+                alert("win");
+            }else{
+                console.log("no baby");
+            }
+        });
+      });
+
+}
+
+const startTimer= () => {
+  startTime = Date.now();
+  timerInterval = setInterval(updateTimer,100);
+}
+
+const stopTimer = () => { //need to fix, if do more then 1 time cant stop
+    clearInterval(timerInterval);
+}
+
+const updateTimer = () => {
+  const elapsedTime = Date.now() - startTime;
+  const formattedTime = formatTime(elapsedTime);
+  document.getElementById('timer').textContent = formattedTime;
+}
+
+const formatTime = (milliseconds) => {
+  const seconds = Math.floor(milliseconds / 1000) % 60;
+  const minutes = Math.floor(milliseconds / 1000 / 60) % 60;
+  const hours = Math.floor(milliseconds / 1000 / 60 / 60);
+
+  const formattedSeconds = padNumber(seconds);
+  const formattedMinutes = padNumber(minutes);
+  const formattedHours = padNumber(hours);
+
+  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+}
+
+const padNumber = (number) => {
+  return number.toString().padStart(2, '0');
+}
+
 window.onload = function () {
     makeBoard();
     buildBoard();
+    checkBoard();
+
 }
 
-// const inputs = document.getElementsByTagName('input');
-
-// inputs.addEventListener("wrong", function() {
-//     let v = parseInt(this.value);
-//     if (v ==! soltion[row][col]) this.style.color = "red";
-//     if (v ==! soltion[row][col]) this.style.color = "green";
-// });

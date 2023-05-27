@@ -1,4 +1,5 @@
 body {
+    margin: 0;
     background-color: #f5f3db;
     color: #333;
     font-family: 'Times New Roman', serif;
@@ -8,34 +9,44 @@ body {
     height: 100vh;
 }
 
+
+#timer {
+  font-family: "Courier New", monospace;
+  font-size: 48px;
+  font-weight: bold;
+  color: red;
+  margin-left: 25%;
+  padding: 10px;
+  background-color: #333;
+  border-radius: 5px;
+  text-align: center;
+  border-radius: 10%;
+}
+
 .container {
-    max-width: 600px;
-    padding: 20px;
+    /* max-width: 600px; padding: 20px;*/
+    max-width: 100%;
+    padding: 3%;
   }
   
 
 h1 {
     font-size: 32px;
     text-align: center;
-    margin-bottom: 20px;
+    left: 4%;
   }
 
-h2 {
-    font-size: 20px;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
 h3 {
-    font-size: 20px;
+    font-size: 18px;
     text-align: center;
-    margin-bottom: 20px;
+    /* margin-bottom: 3%; */
 }
 
 
 table { 
     border-collapse: collapse; 
     font-family: Calibri, sans-serif; 
+    margin: 3%;
 }
 
 colgroup, tbody { 
@@ -84,7 +95,8 @@ input::-webkit-inner-spin-button {
 
 /* CSS */
 .button-56 {
-  margin: 20px auto;
+  margin: 0% auto;
+  left: 8%;
   align-items: center;
   background-color: #fee6e3;
   border: 2px solid #111;
@@ -92,16 +104,16 @@ input::-webkit-inner-spin-button {
   box-sizing: border-box;
   color: #111;
   cursor: pointer;
-  /* display: flex; */
+  display: flex; 
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 2%;
   font-family: Inter,sans-serif;
   font-size: 16px;
   height: 48px;
   justify-content: center;
   line-height: 24px;
   max-width: 100%;
-  padding: 0 25px;
+  padding: 0 4%;
   position: relative;
   text-align: center;
   text-decoration: none;

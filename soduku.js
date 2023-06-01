@@ -241,6 +241,7 @@ const stopTimer = async() => {
 }
 
 const updateTimer = () => {
+    console.log(`new timer add $(timerStart)`);
     if(timerStart){
         const elapsedTime = Date.now() - startTime;
         const formattedTime = formatTime(elapsedTime);

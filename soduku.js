@@ -10,7 +10,9 @@ let winSteps;
 let mestake;
 let startTime;
 let timerInterval;
+let timerStart;
 let soltion = [];
+let ip;
 
 const makeBoard = () => {
     for (let col = 0; col < COL_SIZE; col++) {
@@ -226,34 +228,40 @@ const checkBoard = () => {
 }
 
 const startTimer= () => {
-  startTime = Date.now();
-  timerInterval = setInterval(updateTimer,100);
+    timerStart = true;
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer);
 }
 
-const stopTimer = () => { //need to fix, if do more then 1 time cant stop
-    clearInterval(timerInterval);
+const stopTimer = async() => {
+   timerStart = false; 
+   await fetch('https://api.ipify.org?format=json')
+   .then(response => response.json())
+   .then(data => console.log(data.ip))
 }
 
 const updateTimer = () => {
-  const elapsedTime = Date.now() - startTime;
-  const formattedTime = formatTime(elapsedTime);
-  document.getElementById('timer').textContent = formattedTime;
+    if(timerStart){
+        const elapsedTime = Date.now() - startTime;
+        const formattedTime = formatTime(elapsedTime);
+        document.getElementById('timer').textContent = formattedTime;
+    }
 }
-
+  
 const formatTime = (milliseconds) => {
-  const seconds = Math.floor(milliseconds / 1000) % 60;
-  const minutes = Math.floor(milliseconds / 1000 / 60) % 60;
-  const hours = Math.floor(milliseconds / 1000 / 60 / 60);
-
-  const formattedSeconds = padNumber(seconds);
-  const formattedMinutes = padNumber(minutes);
-  const formattedHours = padNumber(hours);
-
-  return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    const seconds = Math.floor(milliseconds / 1000) % 60;
+    const minutes = Math.floor(milliseconds / 1000 / 60) % 60;
+    const hours = Math.floor(milliseconds / 1000 / 60 / 60);
+  
+    const formattedSeconds = padNumber(seconds);
+    const formattedMinutes = padNumber(minutes);
+    const formattedHours = padNumber(hours);
+  
+    return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
 }
-
-const padNumber = (number) => {
-  return number.toString().padStart(2, '0');
+  
+const padNumber = (value) => {
+    return value.toString().padStart(2, '0');
 }
 
 window.onload = function () {

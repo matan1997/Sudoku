@@ -7,7 +7,7 @@ const EASY = 20;
 const MED = 40;
 const HARD = 60;
 let winSteps;
-let mestake;
+let mistake;
 let startTime;
 let timerInterval;
 let timerStart;
@@ -39,7 +39,7 @@ const copy = (board) => {
     }
 }
 
-const buildBoard = () => { //work
+const buildBoard = () => {
     const table = document.getElementById("myTable");
     let tbody = document.createElement("tbody");
     for (let col = 0; col < COL_SIZE; col++) {
@@ -47,15 +47,14 @@ const buildBoard = () => { //work
         for (let row = 0; row < ROW_SIZE; row++) {
             const rowElement = document.createElement("td");
             const input = document.createElement("input");
-            input.type = "number"
+            input.type = "number";
+            input.maxLength = "1";
             input.setAttribute('max', COL_SIZE);
             input.setAttribute("min", EMPTY_CELL+1);
             input.setAttribute("place",(col*9)+row);
             input.readOnly = true;
-            input.addEventListener("change", function() {
-                let v = parseInt(this.value);
-                if (v < 1) this.value = 1;
-                if (v > COL_SIZE) this.value = COL_SIZE;
+            input.addEventListener("input", function() {
+                if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
             });
             input.id="k";
             rowElement.appendChild(input);
@@ -70,7 +69,7 @@ const buildBoard = () => { //work
     }
 }
 
-const validNum = (board,row, col ,num) => { //worked
+const validNum = (board,row, col ,num) => {
     for(let x = 0; x <= 8; x++){
         if (board[row][x] == num)
             return false;
@@ -97,7 +96,7 @@ const validNum = (board,row, col ,num) => { //worked
 
 const sodukuSolv = (board) => solver(board,0,0);
 
-const solver = (board,row,col) => { //worked
+const solver = (board,row,col) => {
 
     if(row == ROW_SIZE - 1 && col == COL_SIZE){
         return true;
@@ -149,7 +148,9 @@ const solve = () => {
 
 const genarateGame = async(diff) => {
     winSteps = diff; //to change
-    mestake = 0;
+    mistake = 0;
+    const mistake_ht = document.getElementById("mistake-num");
+    mistake_ht.textContent = mistake;
     makeBoard();
     let row = 0;
     let col = 0;
@@ -180,6 +181,7 @@ const genarateByDiff = async(diff) => {
 const checkBoard = () => {
     let counter = 0;
     const inputs = document.getElementsByTagName('input');
+    const mistake_ht = document.getElementById("mistake-num");
 
     for (let row = 0; row < ROW_SIZE; row++) {
         for (let col = 0; col < COL_SIZE; col++) {
@@ -193,20 +195,34 @@ const checkBoard = () => {
                 if (value !== soltion[col][row]){
                     this.style.color = "red";
                     if (this.value !== "") {
-                        mestake++;
-                        console.log(mestake);
+                        mistake++;
+                        console.log(mistake_ht.textContent); //to delete
+                        mistake_ht.textContent = mistake;
                     }
+
+                    // if (mistake === 3) {
+                    //     alert("YOU LOST");
+                    //     solve();
+
+                    // }
                     
                 }else{
+                    let level = "מעולה !"
+                    if (mistake > 3 && mistake <= 6) {
+                        level = "טוב"
+                    } else if(mistake >= 7 && mistake <= 10){
+                        level = "לא טוב"
+                    }else if(mistake > 10){
+                        level = "גרוע."
+                    }
+                    
                     this.style.color = "green";
                     gameBoard[row][col] = value;
                     this.readOnly = true;
                     counter++;
                     if (gameBoard == soltion || counter === winSteps) {
-                        alert("WIN");
+                        alert(`נצחון !\nהמשחק שלך היה ${level}`);
                         stopTimer();
-                    }else{
-                        console.log("no baby");
                     }
                 }
             });
@@ -215,12 +231,8 @@ const checkBoard = () => {
 
     Array.prototype.forEach.call(inputs, element => {
         element.addEventListener("input", function() {
-            // console.log(String(gameBoard));
-            // console.log(String(soltion));
             if (String(soltion) === String(gameBoard)) {
                 alert("win");
-            }else{
-                console.log("no baby");
             }
         });
       });
@@ -237,11 +249,13 @@ const stopTimer = async() => {
    timerStart = false; 
    await fetch('https://api.ipify.org?format=json')
    .then(response => response.json())
-   .then(data => console.log(data.ip))
+   .then(data => {
+    console.log(data)
+    ip = data.ip;
+    })
 }
 
 const updateTimer = () => {
-    console.log(`new timer add $(timerStart)`);
     if(timerStart){
         const elapsedTime = Date.now() - startTime;
         const formattedTime = formatTime(elapsedTime);

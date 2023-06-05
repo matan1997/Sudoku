@@ -9,16 +9,32 @@ body {
     height: 100vh;
 }
 
+#mistake-text {
+  position: absolute;
+  font-family: "Courier New", monospace;
+  font-size: 20px;
+  margin-left: -4%;
+  margin-top: -3%;
+}
+
+#mistake-num {
+  font-family: "Courier New", monospace;
+  font-size: 48px;
+  font-weight: bold;
+  color: rgb(196, 20, 20);
+  background-color: #ffffff;
+  border-radius: 5px;
+}
+
 
 #timer {
   font-family: "Courier New", monospace;
   font-size: 48px;
   font-weight: bold;
   color: red;
-  margin-left: 25%;
+  margin-left: 15%;
   padding: 10px;
   background-color: #333;
-  border-radius: 5px;
   text-align: center;
   border-radius: 10%;
 }

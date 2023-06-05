@@ -12,6 +12,8 @@
     
     <h1>Welcome to Soduku Game !</h1>
     <h3>This game made by Matan Sharvit</h3>
+    <p id="mistake-text">Mistakes</p>
+    <span id="mistake-num">0</span>
     <span id="timer">00:00:00</span>
     <table id="myTable">
         <colgroup><col><col><col>
@@ -24,6 +26,7 @@
     <button class="button-56" role="button" onclick="genarateGame(HARD)">hard game</button>
     <button class="button-56" role="button" id="solve-btn" onclick="solve()">click to solve</button>
     <script src="./soduku.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     </div>
 </body>
 </html>

@@ -199,12 +199,6 @@ const checkBoard = () => {
                         console.log(mistake_ht.textContent); //to delete
                         mistake_ht.textContent = mistake;
                     }
-
-                    // if (mistake === 3) {
-                    //     alert("YOU LOST");
-                    //     solve();
-
-                    // }
                     
                 }else{
                     let level = "מעולה !"

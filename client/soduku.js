@@ -2,11 +2,13 @@ const ROW_SIZE = 9;
 const COL_SIZE = 9;
 const N = 9;
 const EMPTY_CELL = "";
-const gameBoard = [];
+const gameBoard = []; 
 const EASY = 20;
 const MED = 40;
 const HARD = 60;
+const BASE_URL = `http://localhost:3000/soduku`; //${env.BACKEND_URL}
 let winSteps;
+let goodSteps;
 let mistake;
 let startTime;
 let timerInterval;
@@ -56,7 +58,7 @@ const buildBoard = () => {
             input.addEventListener("input", function() {
                 if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);
             });
-            input.id="k";
+           // input.id="k";
             rowElement.appendChild(input);
             colElement.appendChild(rowElement);
         }
@@ -147,17 +149,21 @@ const solve = () => {
 }
 
 const genarateGame = async(diff) => {
-    winSteps = diff; //to change
+    winSteps = diff;
     mistake = 0;
+    goodSteps = 0;
     const mistake_ht = document.getElementById("mistake-num");
     mistake_ht.textContent = mistake;
-    makeBoard();
-    let row = 0;
-    let col = 0;
-    const num = Math.floor(Math.random() * N)+1;
-    gameBoard[row][col] = num; 
-    gameBoard[8][8] = Math.floor(Math.random() * N)+1;
+    makeBoard(); 
+    gameBoard[0][8] = Math.floor(Math.random() * N)+1;
     gameBoard[3][3] = Math.floor(Math.random() * N)+1;
+    gameBoard[6][6] = Math.floor(Math.random() * N)+1;
+    gameBoard[2][0] = Math.floor(Math.random() * N)+1;
+    gameBoard[7][2] = Math.floor(Math.random() * N)+1;
+    gameBoard[1][4] = Math.floor(Math.random() * N)+1;
+    gameBoard[4][7] = Math.floor(Math.random() * N)+1;
+    gameBoard[5][1] = Math.floor(Math.random() * N)+1;
+    gameBoard[8][5] = Math.floor(Math.random() * N)+1;
     await sodukuSolv(gameBoard);
     copy(soltion);
     startTimer();
@@ -178,8 +184,7 @@ const genarateByDiff = async(diff) => {
     updateBoard(gameBoard);
 }
 
-const checkBoard = () => {
-    let counter = 0;
+const checkBoard = () => { 
     const inputs = document.getElementsByTagName('input');
     const mistake_ht = document.getElementById("mistake-num");
 
@@ -191,16 +196,15 @@ const checkBoard = () => {
                 const place = parseInt(this.getAttribute('place'));
                 const col = parseInt(place / 9);
                 const row = place % 9;
-                console.log(soltion[col][row]);//to delete
                 if (value !== soltion[col][row]){
                     this.style.color = "red";
                     if (this.value !== "") {
                         mistake++;
-                        console.log(mistake_ht.textContent); //to delete
                         mistake_ht.textContent = mistake;
                     }
                     
                 }else{
+
                     let level = "מעולה !"
                     if (mistake > 3 && mistake <= 6) {
                         level = "טוב"
@@ -213,24 +217,17 @@ const checkBoard = () => {
                     this.style.color = "green";
                     gameBoard[row][col] = value;
                     this.readOnly = true;
-                    counter++;
-                    if (gameBoard == soltion || counter === winSteps) {
+                    goodSteps++;
+                    console.log(`the goodSteps is ${goodSteps} and win step is ${winSteps}`);
+                    if (gameBoard == soltion || goodSteps === winSteps) {
                         alert(`נצחון !\nהמשחק שלך היה ${level}`);
                         stopTimer();
+                        updateLeaderBoard();
                     }
                 }
             });
         }
     }
-
-    Array.prototype.forEach.call(inputs, element => {
-        element.addEventListener("input", function() {
-            if (String(soltion) === String(gameBoard)) {
-                alert("win");
-            }
-        });
-      });
-
 }
 
 const startTimer= () => {
@@ -241,12 +238,7 @@ const startTimer= () => {
 
 const stopTimer = async() => {
    timerStart = false; 
-   await fetch('https://api.ipify.org?format=json')
-   .then(response => response.json())
-   .then(data => {
-    console.log(data)
-    ip = data.ip;
-    })
+   const ip = await fetch('https://api4.my-ip.io/ip.json').then(res => res.json());
 }
 
 const updateTimer = () => {
@@ -273,10 +265,99 @@ const padNumber = (value) => {
     return value.toString().padStart(2, '0');
 }
 
+const leaderBoard = async (winSteps) => { 
+    const parent = document.getElementById("leaderBoardTable");
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+    }
+    const COL_SIZE = 5;
+    const ROW_MAX_SIZE = 7;
+    let counter = 0;
+    const start = {name: "Name", diff : "Difficulty", mistake : "mistakes", time: "Time"};
+    const diff = parseInt(winSteps) === 20 ? "Easy"
+                 : parseInt(winSteps) === 40 ? "Medium"
+                  : "Hard";
+    const data = await fetchUsers(diff)
+    const NUM_USERS = data.length;
+    data.unshift(start);
+    const leaderBoardTable = document.getElementById("leaderBoard");
+    const dimmedScreen = document.getElementById("dimmedScreen");
+    const button = document.getElementById("closeTable");
+    button.addEventListener("click", function () {
+      leaderBoardTable.style.display = "none";
+      dimmedScreen.style.display = "none";
+    });
+    leaderBoardTable.style.display = "flex";
+    dimmedScreen.style.display = "block";
+    const table = document.getElementById("leaderBoardTable");
+    const tbody = document.createElement("tbody");
+    for (let row = 0;  row < NUM_USERS + 1 && row < ROW_MAX_SIZE; row++) {
+      const colElement = document.createElement("tr");
+      for (let col = 0; col < COL_SIZE; col++) {
+          const rowElement = document.createElement("td");
+          rowElement.setAttribute('class','leaderboard-td');
+          if (col === 0) {
+            if(counter !== 0){
+              rowElement.innerText = counter;
+            }
+            
+          }else if(col === 1) {
+            rowElement.innerText = data[counter].name;
+          }else if (col === 2){
+            rowElement.innerText = data[counter].diff;
+          }else if (col === 3){
+            rowElement.innerText = data[counter].mistake;
+          }else{
+            rowElement.innerText = data[counter].time;
+          }
+          colElement.appendChild(rowElement);
+      }
+      counter++;
+      tbody.appendChild(colElement);
+      table.appendChild(tbody);
+    }
+}
+
+const calScore = (timeInMinute, diff, mistakes) => {
+        const score = ((diff - mistakes) * 1200) - (timeInMinute * 100/(diff/10))
+
+        return score;
+} 
+  
+const fetchUsers = async (diff) => await fetch(BASE_URL+`/leaderboard/${diff}`)
+                                            .then(response => response.json())
+                                            .catch(error => console.error(error));
+    
+const updateLeaderBoard = async () => {
+    const userName = prompt("Great Game !\n Enter your name")
+    const ip = await fetch('https://api4.my-ip.io/ip.json').then(res => res.json());
+    const time = document.getElementById('timer').textContent;
+    const diff = parseInt(winSteps) === 20 ? "Easy"
+        : parseInt(winSteps) === 40 ? "Medium"
+        : "Hard";
+    try {
+      await fetch(BASE_URL+"/leaderboard", {
+      method: "POST",
+      body: JSON.stringify({ip : `${ip.ip}`,
+                            name: `${userName}`,
+                            diff: `${diff}`,
+                            mistake:`${mistake}`,
+                            time: `${time}`
+                          }),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      }})
+    } catch (error) {
+        console.error("סאמק ערס יא אחושלוקי");
+        console.error(error);
+    }
+}
+
 window.onload = function () {
     makeBoard();
     buildBoard();
     checkBoard();
+    dimmedScreen.style.display = "none";
 
 }
 

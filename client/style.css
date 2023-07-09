@@ -1,4 +1,8 @@
 body {
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+    display: table-cell;
+    vertical-align: middle;
     margin: 0;
     background-color: #f5f3db;
     color: #333;
@@ -6,21 +10,23 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 90vh;
 }
 
 #mistake-text {
   position: absolute;
   font-family: "Courier New", monospace;
   font-size: 20px;
-  margin-left: -4%;
+  margin-left: -2%;
   margin-top: -3%;
 }
 
 #mistake-num {
+  position: absolute;
   font-family: "Courier New", monospace;
   font-size: 48px;
   font-weight: bold;
+  margin-left: 25px;
   color: rgb(196, 20, 20);
   background-color: #ffffff;
   border-radius: 5px;
@@ -32,7 +38,7 @@ body {
   font-size: 48px;
   font-weight: bold;
   color: red;
-  margin-left: 15%;
+  margin-left: 20%;
   padding: 10px;
   background-color: #333;
   text-align: center;
@@ -107,7 +113,12 @@ input::-webkit-inner-spin-button {
     font-size: 30px;
     font-weight: bold;
     cursor: pointer;
-  }
+}
+
+.button-container {
+  display: flex; 
+  
+}
 
 
 /* CSS */
@@ -171,4 +182,70 @@ input::-webkit-inner-spin-button {
   .button-56 {
     padding: 0 23px;
   }
+}
+
+
+
+.dimmed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity as desired */
+  z-index: 999;
+}
+
+#leaderBoardButton {
+  margin-top: 50px;
+  position: relative;
+  height: 40px;
+  width: 140px;
+  font-size: 20px;
+  top: 170px;
+  left: 350px;
+  padding: 0%;
+}
+
+#leaderBoard{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f8f6f600;
+}
+
+.leaderboard-td {
+  background-color: #e0e0e0;
+  border: solid thin;
+  height: 1em;
+  width: 3.5em; 
+  padding: 0;
+}
+#leaderBoard{
+  transform: translate(-50%, -50%);
+  border-collapse: collapse; 
+  font-family: Calibri, sans-serif; 
+}
+
+#lb-p {
+  font-family: arcadeFont2;
+  color: #f9f6f6;
+  text-shadow: 0px -2px 4px #fff, 0px -2px 10px #FF3, 0px -10px 20px         #F90, 0px -20px 40px #C33;
+  font-size: 30px;
+  margin: 0;
+  padding: 4px;
+
+}
+
+@font-face {
+  font-family: arcadeFont2;
+  src: url(./Barcade3D-YZBj.otf);
 }

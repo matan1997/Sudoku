@@ -1,0 +1,2 @@
+# Sudoku
+cool beginner game

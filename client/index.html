@@ -32,12 +32,24 @@
     <table id="myTable">
         <colgroup><col><col><col>
         <colgroup><col><col><col>
-        <colgroup><col><col><col>
+        <colgroup><col><col><col>\
+            <div id="number-panel">
+                <button class="number-button" onclick="selectNumber(1)">1</button>
+                <button class="number-button" onclick="selectNumber(2)">2</button>
+                <button class="number-button" onclick="selectNumber(3)">3</button>
+                <button class="number-button" onclick="selectNumber(4)">4</button>
+                <button class="number-button" onclick="selectNumber(5)">5</button>
+                <button class="number-button" onclick="selectNumber(6)">6</button>
+                <button class="number-button" onclick="selectNumber(7)">7</button>
+                <button class="number-button" onclick="selectNumber(8)">8</button>
+                <button class="number-button" onclick="selectNumber(9)">9</button>
+            </div>
     </table>
     <button class="button-56" role="button" onclick="genarateGame(EASY)">easy game</button>
     <button class="button-56" role="button" onclick="genarateGame(MED)">medium game</button>
     <button class="button-56" role="button" onclick="genarateGame(HARD)">hard game</button>
     <button class="button-56" role="button" id="solve-btn" onclick="solve()">click to solve</button>
+    
     <script src="./soduku.js"></script>
     </div>
 </body>

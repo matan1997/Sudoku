@@ -1,0 +1,79 @@
+stages:
+  - triggers
+  - test
+  - deploy
+
+variables:
+  BACKEND_IMAGE: "sudoku-backend"
+  FRONTEND_IMAGE: "sudoku-frontend"
+  VIRSION: "v1"
+
+rules:
+  stage: triggers  
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - echo "marge to MAIN, Good luck buddy !"
+
+check:
+  stage: test
+  image: ubuntu
+  before_script:
+  - echo before
+  script:
+    - echo "check !"
+
+# build:
+#   stage: build-images
+#   image: docker:20.10.16
+#   services:
+#     - docker:20.10.16-dind
+#   variables:
+#     DOCKER_TLS_CERTDIR: "/certs"
+#   before_script:
+#     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+#     #- docker rmi -f $(docker images 'matan1997/*' -q)
+#   script:
+#     - docker compose build
+#     - docker build -t $DOCKER_USERNAME/$FRONTEND_IMAGE ./
+#     - docker push $DOCKER_USERNAME/$FRONTEND_IMAGE
+#     - cd backend
+#     - docker build -t $DOCKER_USERNAME/$BACKEND_IMAGE ./
+#     - docker push $DOCKER_USERNAME/$BACKEND_IMAGE
+#     - docker rmi $DOCKER_USERNAME/$BACKEND_IMAGE
+#     - docker rmi $DOCKER_USERNAME/$FRONTEND_IMAGE
+#     - echo "Images uploaded to docker hub !" 
+#   when: manual
+
+deploy_web:
+  stage: deploy #to add a variables for backend and db to think how to add it to the container
+  image: ubuntu
+  before_script:
+  - apt-get update
+  - sudo snap install docker 2>/dev/null
+  - apt-get install ssh -y
+  - apt-get install curl -y
+  - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - chmod 400 "$PROD_KEY"
+  - ssh-add "$PROD_KEY"
+  - mkdir -p ~/.ssh
+  - chmod 700 ~/.ssh
+  - shopt -s expand_aliases
+  - alias on_server='ssh -o StrictHostKeyChecking=no -i $PROD_KEY PROD_USER@PROD_IP'
+  script:
+    - on_server -- docker rmi -f $BACKEND_IMAGE 2>/dev/null
+    - on_server -- docker rmi -f $FRONTEND_IMAGE 2>/dev/null
+    - on_server -- docker compose build
+    - on_server -- docker compose up -d
+    # - on_server -- docker rm -f snake_db 2>/dev/null 
+    # - on_server -- docker rm -f $FRONTEND_NAME 2>/dev/null
+    # - on_server -- docker rmi -f $DOCKER_USERNAME/$FRONTEND_IMAGE 2>/dev/null
+    # - on_server -- docker run -dit --name snake_db -p 27017:27017 --ip 172.17.0.2 -v /home/ubuntu/data:/data/db mongo #--ip 172.17.0.2 -v /home/ubuntu/data
+    # - on_server -- export DB_URL=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' snake_db) #change from regular ip
+    # - on_server -- echo $DB_URL
+    # - on_server -- docker run -dit --name $BACKEND_NAME --ip 172.17.0.3 -e "DB_URL=DB_URL" -p 3000:3000 $DOCKER_USERNAME/$BACKEND_IMAGE
+    # - on_server -- export BACKEND_URL=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' snake_backend)
+    # - on_server -- echo $BACKEND_URL
+    # - on_server -- docker run -dit --name $FRONTEND_NAME -e "BACKEND_URL=BACKEND_URL" -p 80:80 $DOCKER_USERNAME/$FRONTEND_IMAGE
+  when: manual

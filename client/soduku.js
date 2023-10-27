@@ -2,10 +2,10 @@ const ROW_SIZE = 9;
 const COL_SIZE = 9;
 const N = 9;
 const EMPTY_CELL = "";
-const gameBoard = []; 
+let gameBoard = []; 
 const EASY = 20;
-const MED = 40;
-const HARD = 60;
+const MED = 44;
+const HARD = 53;
 const BASE_URL = `http://localhost:3000/soduku`; //${env.BACKEND_URL}
 let winSteps;
 let goodSteps;
@@ -170,6 +170,19 @@ const genarateGame = async(diff) => {
     genarateByDiff(diff);
 }
 
+const cleanZeros = async (board) => {
+    for (let col = 0; col < COL_SIZE; col++) {
+        for (let row = 0; row < COL_SIZE; row++) {
+            if (board[col][row] == 0){
+                board[col][row] = EMPTY_CELL;
+            }
+
+        }
+    }
+
+    return board;
+}
+
 const genarateByDiff = async(diff) => {
     let counter = 0;
     while (counter < diff) {
@@ -184,47 +197,62 @@ const genarateByDiff = async(diff) => {
     updateBoard(gameBoard);
 }
 
+let choosenPlace;
+let value;
+
+const selectNumber = (value) =>{
+    choosenPlace.value = value;
+    checkInput(choosenPlace, value)
+}
+
+const checkInput = (element, value) => {
+    const mistake_ht = document.getElementById("mistake-num");
+    const place = parseInt(element.getAttribute('place'));
+    const col = parseInt(place / 9);
+    const row = place % 9;
+    if (value !== soltion[col][row]){
+        element.style.color = "red";
+        if (element.value !== "") {
+            mistake++;
+            mistake_ht.textContent = mistake;
+        }
+        
+    }else{
+
+        let level = "מעולה !"
+        if (mistake > 3 && mistake <= 6) {
+            level = "טוב"
+        } else if(mistake >= 7 && mistake <= 10){
+            level = "לא טוב"
+        }else if(mistake > 10){
+            level = "גרוע."
+        }
+        
+        element.style.color = "green";
+        gameBoard[row][col] = value;
+        element.readOnly = true;
+        goodSteps++;
+        console.log(`the goodSteps is ${goodSteps} and win step is ${winSteps}`);
+        if (gameBoard == soltion || goodSteps === winSteps) {
+            alert(`נצחון !\nהמשחק שלך היה ${level}`);
+            stopTimer();
+            updateLeaderBoard();
+        }
+    }
+}
+
 const checkBoard = () => { 
     const inputs = document.getElementsByTagName('input');
     const mistake_ht = document.getElementById("mistake-num");
-
     for (let row = 0; row < ROW_SIZE; row++) {
         for (let col = 0; col < COL_SIZE; col++) {
             const element = inputs[(row*9)+col];
+            element.addEventListener("click", () =>{
+                choosenPlace = element;
+            })
             element.addEventListener("input", function() {
-                const value = parseInt(this.value);
-                const place = parseInt(this.getAttribute('place'));
-                const col = parseInt(place / 9);
-                const row = place % 9;
-                if (value !== soltion[col][row]){
-                    this.style.color = "red";
-                    if (this.value !== "") {
-                        mistake++;
-                        mistake_ht.textContent = mistake;
-                    }
-                    
-                }else{
-
-                    let level = "מעולה !"
-                    if (mistake > 3 && mistake <= 6) {
-                        level = "טוב"
-                    } else if(mistake >= 7 && mistake <= 10){
-                        level = "לא טוב"
-                    }else if(mistake > 10){
-                        level = "גרוע."
-                    }
-                    
-                    this.style.color = "green";
-                    gameBoard[row][col] = value;
-                    this.readOnly = true;
-                    goodSteps++;
-                    console.log(`the goodSteps is ${goodSteps} and win step is ${winSteps}`);
-                    if (gameBoard == soltion || goodSteps === winSteps) {
-                        alert(`נצחון !\nהמשחק שלך היה ${level}`);
-                        stopTimer();
-                        updateLeaderBoard();
-                    }
-                }
+                value = parseInt(this.value);
+                checkInput(element , value);
             });
         }
     }
@@ -238,7 +266,7 @@ const startTimer= () => {
 
 const stopTimer = async() => {
    timerStart = false; 
-   const ip = await fetch('https://api4.my-ip.io/ip.json').then(res => res.json());
+   //const ip = await fetch('https://api4.my-ip.io/ip.json').then(res => res.json());
 }
 
 const updateTimer = () => {
@@ -360,4 +388,3 @@ window.onload = function () {
     dimmedScreen.style.display = "none";
 
 }
-

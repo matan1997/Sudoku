@@ -249,3 +249,29 @@ input::-webkit-inner-spin-button {
   font-family: arcadeFont2;
   src: url(./Barcade3D-YZBj.otf);
 }
+
+/* Add this CSS to align the number buttons to the right */
+#number-panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 10px; /* Adjust margin as needed */
+  margin-left: -50px;
+}
+
+.number-button {
+  padding: 10px 20px;
+  margin: 3px;
+  font-size: 22px;
+  font-weight: bolder;
+  background-color: #dccb74;
+  color: #110e0e;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.number-button:hover {
+  background-color: #ada663;
+}

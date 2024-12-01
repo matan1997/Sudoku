@@ -3,7 +3,7 @@ require("dotenv").config();
 const { Client } = require('pg')
 const client = new Client({
   user: 'postgres',
-  host: `${process.env.DB_HOST}`,  //localhost
+  host: `localhost`,  //localhost ${process.env.DB_HOST}
   database: 'postgres', //postgres
   password: 'Aa123456',
   port: 5432,

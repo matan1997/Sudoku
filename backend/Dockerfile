@@ -6,7 +6,7 @@
  RUN echo "url is $DB_HOST"
  EXPOSE 3000
  RUN npm i
- CMD ["node", "app.js"]
+ CMD ["npm", "start"]
 
 
 

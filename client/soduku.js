@@ -388,3 +388,81 @@ window.onload = function () {
     dimmedScreen.style.display = "none";
 
 }
+
+// Connect to WebSocket
+const socket = new WebSocket('wss://streaming.forexpros.com/echo/639/txcqqjvs/websocket');
+
+socket.onopen = function () {
+    const initial_message = ["{\"_event\":\"bulk-subscribe\",\"tzID\":8,\"message\":\"isOpenExch-2:%%isOpenExch-1:%%pid-1175152:%%isOpenExch-152:%%pid-1175153:%%pid-169:%%pid-166:%%pid-14958:%%pid-44336:%%isOpenExch-97:%%pid-8827:%%isOpenExch-1004:%%pid-8849:%%pid-8833:%%pid-8862:%%pid-8830:%%pid-8836:%%pid-8831:%%pid-8916:%%pid-23705:%%pid-23706:%%pid-23703:%%pid-23698:%%pid-8880:%%isOpenExch-118:%%pid-8895:%%pid-1141794:%%pid-6408:%%pid-6369:%%pid-13994:%%pid-6435:%%pid-13063:%%pid-26490:%%pid-243:%%pid-20:%%pid-172:%%isOpenExch-4:%%pid-27:%%isOpenExch-3:%%pid-167:%%isOpenExch-9:%%pid-178:%%isOpenExch-20:%%pid-6497:%%pid-941155:%%pid-8832:%%pid-1:%%isOpenExch-1002:%%pid-2:%%pid-3:%%pid-5:%%pid-7:%%pid-9:%%pid-10:%%pid-945629:%%pid-1057391:%%pid-1192319:%%pid-1129220:%%pid-1115746:%%pid-1057581:%%pid-49798:%%pid-49799:%%pid-1035793:%%isOpenExch-NaN:%%pid-1166456:%%pid-267:%%pid-8274:%%pid-7992:%%pid-17195:%%pid-252:%%pid-1179312:%%pid-241:%%pid-13969:%%pid-251:%%pidExt-945629:%%isOpenExch-1014:%%pid-1061443:%%pid-1061453:%%pid-1061448:%%pid-1177183:%%pid-1114630:%%cmt-1-5-945629:\"}"]
+    const snp500_message = ["{\"_event\":\"bulk-subscribe\",\"tzID\":8,\"message\":\"isOpenExch-2:%%isOpenExch-1:%%pid-8849:%%isOpenExch-1004:%%pid-8833:%%pid-8862:%%pid-8830:%%pid-8836:%%pid-8831:%%pid-8916:%%pid-1175152:%%isOpenExch-152:%%pid-1175153:%%pid-169:%%pid-166:%%pid-14958:%%pid-44336:%%isOpenExch-97:%%pid-8827:%%pid-6408:%%pid-6369:%%pid-13994:%%pid-6435:%%pid-13063:%%pid-26490:%%pid-243:%%pid-23705:%%pid-23706:%%pid-23703:%%pid-23698:%%pid-8880:%%isOpenExch-118:%%pid-8895:%%pid-1141794:%%pid-20:%%pid-172:%%isOpenExch-4:%%pid-27:%%isOpenExch-3:%%pid-167:%%isOpenExch-9:%%pid-178:%%isOpenExch-20:%%pid-1:%%isOpenExch-1002:%%pid-2:%%pid-3:%%pid-5:%%pid-7:%%pid-9:%%pid-10:%%pid-8832:%%pid-6497:%%pid-941155:%%pid-14175:%%pid-525:%%pid-45279:%%pid-14210:%%pid-14211:%%pid-38150:%%pid-14220:%%pid-38165:%%pid-1131597:%%pid-1202649:%%isOpenExch-47:%%pid-8839:%%isOpenExch-NaN:%%pid-251:%%pid-8274:%%pid-255:%%pid-6386:%%pid-6445:%%pid-6376:%%pid-6462:%%pid-7870:%%pid-6405:%%pid-13842:%%pid-7968:%%pid-8310:%%pidExt-166:%%cmt-1-5-166:%%pid-942611:%%pid-179:%%pid-170:\"}"]
+    // Subscribe to Bitcoin data
+    socket.send(initial_message);
+
+    // Subscribe to S&P 500 data
+    socket.send(snp500_message);
+};
+
+socket.onmessage = function (event) {
+    try {
+        const rawMessage = event.data;
+        const check = rawMessage.indexOf("message");
+
+        if (check !== -1) {
+            let cleanedMessage = rawMessage.slice(2, -1);
+
+            // Remove the extra backslashes to normalize the JSON string
+            cleanedMessage = cleanedMessage.replace(/\\/g, '');
+            cleanedMessage = cleanedMessage.slice(1, -1);
+            cleanedMessage = cleanedMessage.replace(/\\"/g, '"');
+            const startIndex = cleanedMessage.indexOf("::");
+            cleanedMessage = cleanedMessage.slice(startIndex + 2);
+            cleanedMessage = cleanedMessage.slice(0, -2);
+
+            // Parse the cleaned message into a JavaScript object
+            let message = JSON.parse(cleanedMessage);
+           // Extract the required fields
+            let pid = message.pid || "";
+            let lastPrice = message.last || "";
+            let percentageChange = message.pcp || "";
+            let percentageChange_po = parseFloat(message.pcp) || 0;
+
+            // Handle Bitcoin data
+            if (pid === '1057391') {
+                console.log(`PID: ${pid}, Last Price: ${lastPrice}, Percentage Change: ${percentageChange}`);
+                document.getElementById('bitcoin-price').innerText = `$${lastPrice}`;
+                document.getElementById('bitcoin-percentage').innerText = `${percentageChange}`;
+                document.getElementById('bitcoin-percentage').className = `percentage ${percentageChange_po < 0 ? 'negative' : 'positive'}`;
+                document.getElementById('bitcoin-percentage').classList.add('changed');
+                // Remove the 'changed' class after a short delay
+                setTimeout(() => {
+                    document.getElementById('bitcoin-percentage').classList.remove('changed');
+                }, 1000); // Adjust delay as needed
+            }
+
+            // Handle S&P 500 data
+            if (pid == '166') {
+                console.log(`PID: ${pid}, Last Price: ${lastPrice}, Percentage Change: ${percentageChange}`);
+                document.getElementById('snp500-price').innerText = `${lastPrice}`;
+                document.getElementById('snp500-percentage').innerText = `${percentageChange}`;
+                document.getElementById('snp500-percentage').innerText = `${percentageChange}`;
+                document.getElementById('snp500-percentage').className = `percentage ${percentageChange_po < 0 ? 'negative' : 'positive'}`;
+                document.getElementById('snp500-percentage').classList.add('changed');
+                // Remove the 'changed' class after a short delay
+                setTimeout(() => {
+                    document.getElementById('snp500-percentage').classList.remove('changed');
+                }, 1000); // Adjust delay as needed
+            }
+
+    // Log the extracted data for debugging
+    console.log(`PID: ${pid}, Last Price: ${lastPrice}, Percentage Change: ${percentageChange}`);
+    
+        }
+    } catch (e) {
+        console.error('Failed to decode JSON message:', e);
+    }
+};
+
+// Error handling
+socket.onerror = function (error) {
+    console.error('WebSocket Error:', error);
+};

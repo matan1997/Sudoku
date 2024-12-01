@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Soduku</title>
+</head>
+<body>
+    
+
+    <div class="container">
+        <button id="leaderBoardButton" class="button-56" role="button" onclick="leaderBoard()">Leaderboard</button>
+    
+    <h1>Welcome to Soduku Game !</h1>
+    <h3>This game made by Matan Sharvit</h3>
+    <p id="mistake-text">Mistakes</p>
+    <span id="mistake-num">0</span>
+    <span id="timer">00:00:00</span>
+    <div id="leaderBoard" style="display: none;">
+        <p id="lb-p">  Soduku Wall Of Fame ! </p>
+        <table id="leaderBoardTable"></table>
+        <div class="button-container">
+            <button onclick="leaderBoard(EASY)">Easy</button>
+            <button onclick="leaderBoard(MED)">Medium</button>
+            <button onclick="leaderBoard(HARD)">Hard</button>
+        </div>
+        <button id="closeTable">Close Table</button>
+    </div>
+    <div id="dimmedScreen" class="dimmed"></div>
+    <table id="myTable">
+        <colgroup><col><col><col>
+        <colgroup><col><col><col>
+        <colgroup><col><col><col>\
+            <div id="number-panel">
+                <button class="number-button" onclick="selectNumber(1)">1</button>
+                <button class="number-button" onclick="selectNumber(2)">2</button>
+                <button class="number-button" onclick="selectNumber(3)">3</button>
+                <button class="number-button" onclick="selectNumber(4)">4</button>
+                <button class="number-button" onclick="selectNumber(5)">5</button>
+                <button class="number-button" onclick="selectNumber(6)">6</button>
+                <button class="number-button" onclick="selectNumber(7)">7</button>
+                <button class="number-button" onclick="selectNumber(8)">8</button>
+                <button class="number-button" onclick="selectNumber(9)">9</button>
+            </div>
+    </table>
+    <button class="button-56" role="button" onclick="genarateGame(EASY)">easy game</button>
+    <button class="button-56" role="button" onclick="genarateGame(MED)">medium game</button>
+    <button class="button-56" role="button" onclick="genarateGame(HARD)">hard game</button>
+    <button class="button-56" role="button" id="solve-btn" onclick="solve()">click to solve</button>
+    
+    <script src="./soduku.js"></script>
+    </div>
+</body>
+</html>

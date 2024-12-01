@@ -6,7 +6,7 @@ const PORT = 3000;
 const LeaderboardRouter = require('./routes/leaderRoute');
 
 var corsOptions = {
-        origin: 'http://3.80.99.11', // 'http://3.80.99.11'
+        origin: 'localhost', // 'http://3.80.99.11'
         optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 

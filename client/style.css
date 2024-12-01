@@ -1,16 +1,17 @@
 body {
-  height: 100%;
-  overflow: hidden; /* Prevent scrolling */
-    display: table-cell;
-    vertical-align: middle;
-    margin: 0;
-    background-color: #f5f3db;
-    color: #333;
-    font-family: 'Times New Roman', serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
+  height: 80%;
+  /* Prevent scrolling */
+  /* overflow: hidden;  */
+  display: table-cell;
+  vertical-align: middle;
+  margin: 0;
+  background-color: #f5f3db;
+  color: #333;
+  font-family: 'Times New Roman', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 120vh; */
 }
 
 #mistake-text {
@@ -274,4 +275,52 @@ input::-webkit-inner-spin-button {
 
 .number-button:hover {
   background-color: #ada663;
+}
+
+#live-data-panel {
+  display: flex;
+  justify-content: space-around;
+  padding: 5px;
+  background-color: #282c34;
+  border-bottom: 1px solid #444;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  color: #fff;
+}
+.data-item {
+  padding: 15px;
+  border: 1px solid #555;
+  background-color: #333;
+  border-radius: 8px;
+  text-align: center;
+  width: 200px;
+}
+.data-item h3 {
+  margin: 0 0 1px;
+  font-size: 2em;
+}
+.data-item p {
+  margin: 1px 0;
+  font-size: 1.4em;
+}
+
+.price {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+.percentage {
+  font-size: 1em;
+  color: #4caf50; /* Green color for positive change */
+}
+.percentage.negative {
+  color: #f44336; /* Red color for negative change */
+}
+
+.percentage.changed {
+  color: #888147; /* Highlight color for changed values */
+  font-size: 1.5em;
+  /* padding: 1px 2px;
+  border-radius: 4px;  */
 }

@@ -8,17 +8,23 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - sudoku-data:/var/lib/postgresql/data
+      #- sudoku-data:/var/lib/postgresql/data
       - ./backend/db/sql_scripts/:/docker-entrypoint-initdb.d/
     environment:
       - POSTGRES_PASSWORD=Aa123456
+    networks:
+      - sudoku-net
+
   frontend:
     container_name: sudoku_frontend
     build: ./client
     ports:
       - 80:80
     environment:
-      - BACKEND_URL=localhost:3000
+      - BACKEND_URL=http://backend:3000
+    networks:
+      - sudoku-net
+
   backend:
     container_name: sudoku_backend
     restart: always
@@ -27,5 +33,11 @@ services:
       - 3000:3000
     environment:
       - DB_HOST=database
+    networks:
+      - sudoku-net
+
 volumes:
   sudoku-data:
+
+networks:
+  sudoku-net:
